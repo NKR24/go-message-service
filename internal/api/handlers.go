@@ -28,3 +28,13 @@ func (h *Handlers) CreateMessage(c echo.Context) error {
 	}
 	return c.JSON(http.StatusOK, message)
 }
+
+func (h *Handlers) GetStatistic(c echo.Context) error {
+	count := 0
+	query := `SELECT COUNT(*) FROM message WHERE status='processed'`
+	err := h.DB.Get(&count, query)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]string{"Error": err.Error()})
+	}
+	return c.JSON(http.StatusOK, map[string]int{"Processed Message": count})
+}
